@@ -14,10 +14,12 @@ def lerpToPos(x, y, ms):
 	
 	basePos = ms.position
 	
-	while(t < 1):
+	while(t <= 1):
+		t = min(t, 1)
+		
 		ms.position = (lerp(basePos[0], x, t), lerp(basePos[1], y, t))
 		
-		t += 0.033
+		t += 1
 		time.sleep(0.016)
 
 class Adjacent:
@@ -34,8 +36,6 @@ class Vertex:
 	def moveToAdjacent(self, ms, vertices):
 		
 		lerpToPos(self.value[0], self.value[1], ms)
-		
-		# time.sleep(0.3)
 		
 		for adjacent in self.adjacent:
 			if(adjacent.hasGone): # Too bad, already gone to that vertice
@@ -66,7 +66,6 @@ class Vertex:
 				continue
 			
 			lerpToPos(self.value[0], self.value[1], ms)
-			# time.sleep(0.3)
 
 			vertex = vertices[adjacent.index]
 
@@ -80,6 +79,10 @@ class Vertex:
 			return True
 		# By this point, we should have finished the cube!
 		return False
+	
+	def resetAdjacentValues(self):
+		for adjacent in self.adjacent:
+			adjacent.hasGone = False
 
 vertices = [
 	Vertex(600. , 500., 100., # 0 +
@@ -172,8 +175,7 @@ theta = 0
 
 index = 0
 
-# while(theta < 120):
-if(True):	
+while(theta < 120):
 	kb.press(keyboard.Key.ctrl)
 	kb.press('a')
 	kb.release('a')
@@ -189,6 +191,9 @@ if(True):
 	vertices[0].moveToAdjacent(ms, vertices)
 	
 	ms.release(mouse.Button.left)
+	
+	for vertex in vertices:
+		vertex.resetAdjacentValues()
 	
 	# while(index < 12):
 	# 	flrIndex = index
